@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import cPickle as pickle
+from dateutil.parser import parse
 
 os.chdir('/home/lj/ML/NuBank')
 
@@ -53,12 +54,24 @@ def flags2binary(x):
         return x
 
 
-app_data['y'] = app_data['y'].apply(lambda x: flags2binary(x))
+app_data['y'] = app_data['y'].apply(flags2binary)
 app_data.to_csv('data.csv')
+
+def timedelta_to_years(td):
+    x = float(str(td).split()[0])
+    return x/(1e9*3600*24*365.25)
+
 
 data = pd.read_csv('data.csv')
 data['Credit_Line_approved_pct'] = data['Credit_Line_approved'] / data['Credit_Line_requested']
+data['application_when'] = data['application_when'].apply(parse)
+data['birth_date'] = data['birth_date'].apply(parse)
+data['applicant_age'] = data['application_when'] - data['birth_date']
+data['applicant_age'] = data['applicant_age'].apply(timedelta_to_years)
 
+data.dropna(axis=0, subset=['y'], inplace=True)
+
+data.to_csv('data.csv')
 
 
 
