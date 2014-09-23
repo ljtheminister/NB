@@ -54,8 +54,12 @@ def flags2binary(x):
 
 
 app_data['y'] = app_data['y'].apply(lambda x: flags2binary(x))
+app_data.to_csv('data.csv')
 
-app_data.to_pickle('data.p')
+data = pd.read_csv('data.csv')
+data['Credit_Line_approved_pct'] = data['Credit_Line_approved'] / data['Credit_Line_requested']
+
+
 
 
 
