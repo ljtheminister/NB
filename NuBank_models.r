@@ -1,5 +1,9 @@
 library(psych)
 library(xtable)
+library(caret)
+library(pROC)
+library(MASS)
+library(e1071)
 
 setwd('~/ML/NuBank')
 data <- read.csv('data.csv')
@@ -18,8 +22,6 @@ data$residence_duration <- factor(data$residence_duration, c('6 months or less',
 data$Gender_facebook_female <- ifelse(data$Gender_facebook=='female', 1, 0)
 data$Credit_Line_approved_pct <- as.numeric(as.character(data$Credit_Line_approved_pct))
 data$applicant_age <- as.numeric(as.character(data$applicant_age))
-
-
 data$age2 <- data$applicant_age^2
 data$income2 <- data$monthly_income_amount^2
 data$rent2 <- data$monthly_rent_amount^2
@@ -37,6 +39,11 @@ X <- cbind(X_num_whitened, X_cat)
 X_geo <- cbind(X, data[, c(37, 38)])
 
 y <- ifelse(data$y==-1, 0, data$y)
+data2<- cbind(X,y)
+data2 <- na.omit(data2)
+
+X <- data2[, 1:22]
+y <- data2$y
 ## Principle Component Analysis
 
 PC <- princomp(X_num_whitened)
@@ -72,54 +79,94 @@ ggscreeplot(PC) +
 
 ggsave(file='screeplot.pdf', width=297, height=210, units="mm")
 
-
-
-dat1  <-  data.frame(dat1$scores) 
-dat1$items  <-  rownames(data1) 
-ggplot(dat1, aes(Comp.1, Comp.2, colour = items)) + geom_point() + 
-  theme(legend.position="none") 
-
-pc <- prcomp(X_num_whitened)
-summary(pc)
-
-data2 <- cbind(X, y)
-
 ## Factor Analysis
 
-## Logistic Regression
+
+# 80-20 test training split
 N = nrow(X)
-test_rows <- sample(1:N, 64, replace=FALSE)
+test_split_prop <- .20
+test_rows <- sample(1:N, test_split_prop*N, replace=FALSE)
+
 X_train <- X[-test_rows,]
 X_test <- X[test_rows,]
 y_train <- y[-test_rows]
 y_test <- y[test_rows]
 
+### BUILD MODELS
 
-logit_full <- glm(y_train ~ ., data=X_train, family='binomial')
-summary(logit_full)
+## Logistic Regression
 
-p_full <- predict(logit_full, newdata=X_test)
+full_model <- glm(y_train ~ ., data=X_train, family='binomial')
+full_pred <- predict(full_model, newdata=X_test)
+summary(full_model)
+roc_full <- roc(y_test, full_pred)
+plot(roc_full)
+
+null_model <- glm(y_train ~ 1, data=X_train, family='binomial')
+null_pred <- predict(null_model, newdata=X_test)
+summary(null_model)
+roc_null <- roc(y_test, null_pred)
+plot(roc_null)
+
+
+backward_model <- stepAIC(full_model, scope=list(upper=full_model, lower=null_model), direction="backward")
+back_pred <- predict(backward_model, newdata=X_test)
+summary(backward_model)
+roc_back <- roc(y_test, back_pred)
+plot(roc_back)
+
+
+forward_model <- stepAIC(null_model, scope=list(upper=full_model, lower=null_model), direction="forward")
+fwd_pred <- predict(forward_model, newdata=X_test)
+summary(forward_model)
+roc_fwd <- roc(y_test, fwd_pred)
+plot(roc_fwd)
+
+both_back <- stepAIC(backward_model, scope=list(upper=full_model, lower=null_model), direction="both")
+both_forw <- stepAIC(forward_model, scope=list(upper=full_model, lower=null_model), direction="both")
+
+
+
+
+# 10-Fold Cross-Validation
+
+folds <- createFolds(y, 10)
+
+k_fold_cv_error
+
+for (i in 1:10) {
+  test_rows <- folds[i]
+  X_train <- X[-test_rows,]
+  X_test <- X[test_rows,]
+  y_train <- y[-test_rows]
+  y_test <- y[test_rows]
+
+  
+  
+}
+
+
+
+
+
+
+
 p_full <- ifelse(p_full>0.5, 1, 0)
 sum(p_full == y_test)/length(y_test)
 
-logit1 <- glm(y_train ~ raw_unit4_score + applicant_age + Gender_facebook_female, data=X_train, family='binomial')
-summary(logit1)
 
-p1 <- predict(logit1, newdata=X_test)
 p1_pred <- ifelse(p1>0.5, 1, 0)
 sum(p1_pred == y_test)/length(y_test)
 
-logit2 <- glm(y_train ~ raw_unit4_score + applicant_age + monthly_rent_amount, data=X_train, family='binomial')
-summary(logit2)
 
-p2 <- predict(logit2, newdata=X_test)
 p2_pred <- ifelse(p2>0.5, 1, 0)
 
 sum(p2_pred == y_test)/length(y_test)
 
 logit_back <- step(logit_full)
 
-logitback <- glm(y_train ~ raw_lexisnexis_score + Credit_Line_approved_pct + applicant_age + salary_frequency, data=X_train, family = 'binomial')
+logitback <- glm(y_train ~ raw_lexisnexis_score + Credit_Line_approved_pct + applicant_age + salary_frequency, scope = y_train ~ ., data=X_train, family = 'binomial')
+stepAIC(logitback, direction="forward")
 
 summary(logitback)
 p_back <- predict(logitback, newdata=X_test)
@@ -131,14 +178,22 @@ logit_step_both <- step(logit_full, direction="both")
 # GOT TO ADD SCOPE TO both directions of step-wise logistic regression
 
 
-svm1 <- svm(y_train ~ raw_unit4_score + applicant_age + Gender_facebook_female, data=X_train)
+svm1 <- svm(y_train ~ raw_lexisnexis_score + applicant_age + Gender_facebook_female, data=X_train)
 svm_p1 <- predict(svm1, newdata=X_test)
+roc_svm1 <- roc(y_test, svm_p1)
+plot(roc_svm1)
+
 svm_pred1 <- ifelse(svm_p1>0.5, 1, 0)
 
 sum(svm_pred1 == y_test)/length(y_test)
 
-svm2 <- svm(y_train ~ raw_unit4_score + applicant_age + monthly_rent_amount, data=X_train)
+svm2 <- svm(y_train ~ raw_lexisnexis_score + applicant_age + monthly_rent_amount, data=X_train)
 svm_p2 <- predict(svm1, newdata=X_test)
+roc_svm2 <- roc(y_test, svm_p2)
+plot(roc_svm2)
+
+
+
 svm_pred2 <- ifelse(svm_p2>0.5, 1, 0)
 sum(svm_pred2 == y_test)/length(y_test)
 
