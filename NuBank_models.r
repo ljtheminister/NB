@@ -4,6 +4,9 @@ library(caret)
 library(pROC)
 library(MASS)
 library(e1071)
+library(glmnet)
+library(rpart)
+library(randomForest)
 
 setwd('~/ML/NuBank')
 data <- read.csv('data.csv')
@@ -27,12 +30,13 @@ data$income2 <- data$monthly_income_amount^2
 data$rent2 <- data$monthly_rent_amount^2
 
 
-X_num <- data[, c(4, 10, 19:24, 40, 42:46)]
-names(X_num) <- names(data)[c(4, 10, 19:24, 40, 42:46)]
-X_cat <- data[, c(8, 13:18, 26)]
-names(X_cat) <- names(data)[c(8, 13:18, 26)]
+X_num <- data[, c(4, 8, 10, 19:24, 40, 42:46)]
+names(X_num) <- names(data)[c(4, 8, 10, 19:24, 40, 42:46)]
+X_cat <- data[, c(13:18, 26)]
+names(X_cat) <- names(data)[c(13:18, 26)]
 
 X_num_whitened <- scale(X_num, center=TRUE, scale=TRUE)
+names(X_num_whitened) <- names(X_num)
 
 X <- cbind(X_num_whitened, X_cat)
 
@@ -52,6 +56,7 @@ plot(PC)
 screeplot(PC, type='lines')
 vars <- apply(PC$x, 2, var)
 
+PC2 
 
 ggscreeplot <- function(pcobj, type = c('pev', 'cev')) 
 {
@@ -96,6 +101,8 @@ y_test <- y[test_rows]
 
 ## Logistic Regression
 
+# Stepwise Models using AIC
+
 full_model <- glm(y_train ~ ., data=X_train, family='binomial')
 full_pred <- predict(full_model, newdata=X_test)
 summary(full_model)
@@ -125,7 +132,7 @@ plot(roc_fwd)
 both_back <- stepAIC(backward_model, scope=list(upper=full_model, lower=null_model), direction="both")
 both_forw <- stepAIC(forward_model, scope=list(upper=full_model, lower=null_model), direction="both")
 
-
+# Sparse Regression using Regularization
 
 
 # 10-Fold Cross-Validation
@@ -145,40 +152,38 @@ for (i in 1:10) {
   
 }
 
+## Classification Trees
 
+loan.tree <- rpart(y_train ~., data=X_train)
+printcp(loan.tree)
 
+plot(loan.tree, uniform=TRUE)
+text(loan.tree, all=TRUE, cex=0.75, splits=TRUE, use.n=TRUE, xpd=TRUE)
 
+pdf('CART.pdf', paper='a4r')
+draw.tree(loan.tree, cex=0.5, nodeinfo=TRUE)
+dev.off()
 
+CART_pred <- predict(loan.tree, newdata=X_test)
+pdf('roc_CART.pdf', paper='a4r')
+plot(roc(y_test, CART_pred), main="ROC Curve of Classification Tree (AUC = .5685)")
+dev.off()
 
+## Random Forest
 
-p_full <- ifelse(p_full>0.5, 1, 0)
-sum(p_full == y_test)/length(y_test)
+loan.rf <- randomForest(factor(y_train) ~ ., data=X_train, type='classification')
+rf_pred <- predict(loan.rf, newdata=X_test)
 
+table(actual=y_test, predicted=predict(loan.rf, newdata=X_test, type="class"))
 
-p1_pred <- ifelse(p1>0.5, 1, 0)
-sum(p1_pred == y_test)/length(y_test)
+## Support Vector Machine
 
+svm_full <- svm(y_train ~ ., data=X_train)
+svm_pred <- predict(svm_full, newdata=X_test)
+svm_full_roc <- roc(y_test, svm_pred)
+svm_full_roc
 
-p2_pred <- ifelse(p2>0.5, 1, 0)
-
-sum(p2_pred == y_test)/length(y_test)
-
-logit_back <- step(logit_full)
-
-logitback <- glm(y_train ~ raw_lexisnexis_score + Credit_Line_approved_pct + applicant_age + salary_frequency, scope = y_train ~ ., data=X_train, family = 'binomial')
-stepAIC(logitback, direction="forward")
-
-summary(logitback)
-p_back <- predict(logitback, newdata=X_test)
-p_back_pred <- ifelse(p_back>0.5, 1, 0)
-
-sum(p_back_pred == y_test)/length(y_test)
-
-logit_step_both <- step(logit_full, direction="both")
-# GOT TO ADD SCOPE TO both directions of step-wise logistic regression
-
-
-svm1 <- svm(y_train ~ raw_lexisnexis_score + applicant_age + Gender_facebook_female, data=X_train)
+svm1 <- svm(y_train ~ raw_lexisnexis_score + applicant_age + salary_frequency, data=X_train)
 svm_p1 <- predict(svm1, newdata=X_test)
 roc_svm1 <- roc(y_test, svm_p1)
 plot(roc_svm1)
@@ -187,19 +192,3 @@ svm_pred1 <- ifelse(svm_p1>0.5, 1, 0)
 
 sum(svm_pred1 == y_test)/length(y_test)
 
-svm2 <- svm(y_train ~ raw_lexisnexis_score + applicant_age + monthly_rent_amount, data=X_train)
-svm_p2 <- predict(svm1, newdata=X_test)
-roc_svm2 <- roc(y_test, svm_p2)
-plot(roc_svm2)
-
-
-
-svm_pred2 <- ifelse(svm_p2>0.5, 1, 0)
-sum(svm_pred2 == y_test)/length(y_test)
-
-svm_full <- svm(y_train ~ ., data=X_train)
-svm_full <- predict(svm_full, newdata=X_test)
-svm_pred_full <- ifelse(svm_full>0.5, 1, 0)
-
-svm_pred_full == y_test
-sum(svm_pred_full == y_test)/length(y_test)

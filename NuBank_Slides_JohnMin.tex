@@ -32,31 +32,41 @@
 \section{Exploratory Data Analysis - Discerning between the good and bad applicants?}
 
 \subsection{Basic Demographics - Age, Gender}
+\vspace{40mm}
+\begin{center}
 \includegraphics[scale=0.45]{applicant_age_repayment_density.pdf}
 \includegraphics[scale=0.45]{gender_repayment_density.pdf}
+\end{center}
 
 \subsection{Credit Line}
+\begin{center}
 \includegraphics[scale=0.45]{CL_approved_repayment_density.pdf}
 \includegraphics[scale=0.45]{CL_requested_repayment_density.pdf}
-
+\end{center}
 \centerline{\includegraphics[scale=0.45]{CL_approved_pct_repayment_density.pdf}
 }
 
 \newpage
 
 \subsection{Income}
-
+\vspace{40mm}
+\begin{center}
 \includegraphics[scale=0.45]{monthly_income_loan_repayment_density.pdf}
 \includegraphics[scale=0.45]{salary_frequency_repayment_density.pdf}
+\end{center}
 
 \newpage
 \subsection{Rent}
 
+\vspace{40mm}
+
+\begin{center}
 \includegraphics[scale=0.45]{monthly_rent_loan_repayment_density.pdf}
 \includegraphics[scale=0.45]{residence_duration_repayment_density.pdf}
+\end{center}
 
 \newpage
-\subsection*{Credit Scores}
+\subsection{Credit Scores}
 \includegraphics[scale=0.45]{fico_repayment_density.pdf}
 \includegraphics[scale=0.45]{serasa_repayment_density.pdf} \\
 \includegraphics[scale=0.45]{tu_repayment_density.pdf}
@@ -78,7 +88,6 @@ Note: $ \rho( \text{Unit 4 Score, Lexis Nexis Score}) = .8947$
 
 \newpage
 \section{Principal Component Analysis (P.C.A.)}
-
 \subsection{Loadings}
 \begin{table}[ht]
 \centering
@@ -101,36 +110,81 @@ Credit\_Line\_requested & 0.06 & -0.45 & -0.04 & 0.57 & -0.00 & 0.01 & -0.00 & 0
   income2 & 0.13 & -0.46 & -0.14 & -0.40 & -0.12 & 0.04 & -0.06 & -0.36 & -0.01 & -0.11 & -0.65 & 0.09 & -0.02 & 0.00 \\ 
   rent2 & 0.19 & -0.25 & -0.04 & -0.24 & 0.17 & -0.02 & 0.15 & 0.87 & 0.06 & -0.02 & -0.15 & -0.04 & 0.01 & -0.00 \\ 
    \hline
+	Proportion of Variance &  0.259 & 0.156 & 0.134 & 0.119 & 0.081 & 0.071 & 0.063 & 0.053 & 0.025 &  0.020& 0.008 & 0.006 & 0.001 & 0.00\\
    Cumulative Prop. of Var. & 0.259 & 0.415 & 0.550 & 0.669 & 0.751 & 0.823 & 0.886 & 0.939 & 0.9652 & 0.984 & 0.992 & 0.998 & 0.999 & 1.00 \\
    \hline
 \end{tabular}
 \end{table}
-
-
-
 \subsection{Screeplot}
-\centerline{\includegraphics[scale=0.45]{screeplot.pdf}}
+\centerline{\includegraphics[scale=0.42]{screeplot.pdf}}
+
+\section{Classification Tree (CART)}
+\includegraphics[scale=0.55]{CART.pdf}
+
+
+\includegraphics{roc_CART.pdf}
 
 \newpage
 \section{Logistic Regression}
+\subsection{Stepwise Regression using AIC}
+
+\begin{itemize}
+	\item Forward model from Null model: $y \sim raw\_lexisnexis\_score + applicant\_age + salary\_frequency$
+	\item Backward model from Full model: $y \sim raw\_lexisnexis\_score + raw\_fico\_score + applicant\_age + salary\_frequency$
+	\item Both directions from forward and backward models: $y \sim raw\_lexisnexis\_score + applicant\_age + salary\_frequency$
+\end{itemize}
 
 \section{Other Models}
-\newpage
-\subsection{Support Vector Machine (SVM)}
+\begin{itemize}
+	\item SVM
+	\item Random Forest
+\end{itemize}
 
-\subsection{Linear Discriminant Analysis (LDA)}
+\section{Results - AUC of ROC}
 
-\begin{center}
+\begin{itemize}
+	\item CART: .5685
+	\item Logistic Regression: .5747 -- .5848
+	\item Support Vector Machine: .5672 -- .5734
+	\item Random Forest: .5748 correct in test set
+\end{itemize}
 
-\end{center}
-
-\newpage
 \section{Comments and Concerns}
 
+\begin{itemize}
+	\item Small sample size (n = 639)
+	\item Data cleanliness: applicant\_age, monthly\_rent\_amount, monthly\_income\_amount, residence\_rent\_or\_own
+	\item Regression problem instead of binary classification -- proportion of loan paid back
+	\item What about rejected applications?
+	
+	
+\end{itemize}
+
+\section{Further work}
+
+
+\begin{itemize}
+	\item Factor Analysis with Categorical Variables	
+	\item Boosting/bagging with tree classifier
+	\item Feature selection using regularization instead of stepwise method
+	\item Improving predictive models
+	\item Spatial analysis and regression when there is more data to consider neighborhoods
+\end{itemize}
+
 \newpage
-\section{Questions?}
+\section*{Questions?}
 
-Thank you.
+\vspace{85mm}
 
+      \begin{center}
+
+        \font\endfont = cmss10 at 25.40mm
+        \endfont 
+        \baselineskip 20.0mm
+
+        Thank you
+
+      \end{center}    
+	
 
 \end{document}

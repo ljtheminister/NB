@@ -2,7 +2,6 @@ library(ggplot2)
 library(reshape2)
 library(rgdal)
 library(maptools)
-library(e1071)
 
 setwd('~/ML/NuBank')
 data <- read.csv('data.csv')
