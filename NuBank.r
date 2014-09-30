@@ -201,67 +201,96 @@ data$good <- factor(data$good)
 
 # Overlayed Histograms in ggplot2
 
-ggplot(data, aes(x=monthly_income_amount, fill=factor(y))) + geom_density(alpha=0.5) +
+ggplot(data, aes(x=monthly_income_amount, fill=factor(y))) + geom_density(alpha=0.4) +
   ggtitle('Density Plot of Loan Repayment Status vs. Reported Monthly Income') +
   xlab('Reported Monthly Income') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
+ggsave(file='monthly_income_loan_repayment_density.pdf', width=297, height=210, units="mm")
 
-ggplot(data, aes(x=monthly_rent_amount, fill=factor(y))) + geom_density(alpha=0.5) +
+ggplot(data, aes(x=monthly_rent_amount, fill=factor(y))) + geom_density(alpha=0.4) +
   ggtitle('Density Plot of Loan Repayment Status vs. Reported Monthly Rent') +
   xlab('Reported Monthly Rent') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
+        
+ggsave(file='monthly_rent_loan_repayment_density.pdf', width=297, height=210, units="mm")
+                      
 
-
-
-ggplot(data, aes(x=raw_unit4_score, fill=factor(y))) + geom_density(alpha=0.5) +
+ggplot(data, aes(x=raw_unit4_score, fill=factor(y))) + geom_density(alpha=0.4) +
   ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
   xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
+ggsave(file='unit4_repayment_density.pdf', width=297, height=210, units="mm")
 
-ggplot(data, aes(x=raw_serasa_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+ggplot(data, aes(x=raw_serasa_score, fill=factor(y))) + geom_density(alpha=0.4) +
+  ggtitle('Density Plot of Loan Repayment Status vs. Serasa Score') +
+  xlab('Serasa Score') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
+                      
+ggsave(file='serasa_repayment_density.pdf', width=297, height=210, units="mm")
 
-ggplot(data, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  
+ggplot(data, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0.4) +
+  ggtitle('Density Plot of Loan Repayment Status vs. Lexis Nexis Score') +
+  xlab('Lexis Nexis Score') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
-ggplot(data, aes(x=raw_TU_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+ggsave(file='lexisnexis_repayment_density.pdf', width=297, height=210, units="mm")
+                        
+                        
 
-ggplot(data, aes(x=raw_FICO_money_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+                      
+ggplot(data, aes(x=raw_TU_score, fill=factor(y))) + geom_density(alpha=0.4) +
+  ggtitle('Density Plot of Loan Repayment Status vs. TU Score') +
+  xlab('TU Score') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
+ggsave(file='tu_repayment_density.pdf', width=297, height=210, units="mm")
 
-ggplot(data, aes(x=Credit_Line_approved_pct, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+                      
+ggplot(data, aes(x=raw_FICO_money_score, fill=factor(y))) + geom_density(alpha=0.4) +
+  ggtitle('Density Plot of Loan Repayment Status vs. FICO Score') +
+  xlab('FICO Score') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
+                      
+ggsave(file='fico_repayment_density.pdf', width=297, height=210, units="mm")
+                      
+                      
+                      
+ggplot(data, aes(x=Credit_Line_approved_pct, fill=factor(y))) + geom_density(alpha=0.4) +
+  ggtitle('Density Plot of Loan Repayment Status vs. Credit Line Approved Percent (%)') +
+  xlab('Credit Line Approved / Credit Line Requested (%)') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
+                      
+ggsave(file='CL_approved_pct_repayment_density.pdf', width=297, height=210, units="mm")
 
 
 ggplot(data, aes(x=Credit_Line_requested, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  ggtitle('Density Plot of Loan Repayment Status vs. Credit Line Requested ') +
+  xlab('Credit Line Requested') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
 
+ggsave(file='CL_requested_repayment_density.pdf', width=297, height=210, units="mm")
+
+                      
 ggplot(data, aes(x=Credit_Line_approved, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
   xlab('Unit 4 Score') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
+                   
+ggsave(file='CL_approved_repayment_density.pdf', width=297, height=210, units="mm")
+
+
 
 ggplot(data, aes(x=applicant_age, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Applicant Age') +
   xlab('Applicant Age (years)') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Paid back in 12 months', 'Outstanding'))
-
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
+                      
+ggsave(file='applicant_age_repayment_density.pdf', width=297, height=210, units="mm")
+                      
+                      
 table(data$applicant_age)
 hist(data$applicant_age)
 
