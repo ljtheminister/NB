@@ -1,7 +1,8 @@
 \documentclass[a4paper, landscape]{article}
 
 %\documentclass[a4paper]{article}
-
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{rotating}
 \usepackage[margin=0.25in]{geometry}
 \usepackage{graphicx}
@@ -9,7 +10,12 @@
 
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
+\newcommand{\vcenteredinclude}[1]{\begingroup
+\setbox0=\hbox{\includegraphics{#1}}%
+\parbox{\wd0}{\box0}\endgroup}
 
+\newcommand*{\vcenteredhbox}[1]{\begingroup
+\setbox0=\hbox{#1}\parbox{\wd0}{\box0}\endgroup}
 
 \begin{document}
 \title{NuBank Data Challenge}
@@ -19,72 +25,112 @@
 
 \tableofcontents
 
-\newpage
-
-\section*{Who are the applicants?}
-
-
-
-
-\section*{The good guys}
 \graphicspath{ {/home/lj/ML/NuBank/Plots/} }
 
 \newpage
 
-\subsection*{Age, Gender}
+\section{Exploratory Data Analysis - Discerning between the good and bad applicants?}
 
-
-\begin{center}
+\subsection{Basic Demographics - Age, Gender}
 \includegraphics[scale=0.45]{applicant_age_repayment_density.pdf}
 \includegraphics[scale=0.45]{gender_repayment_density.pdf}
-\end{center}
 
-\section*{Credit Line}
-\includegraphics[scale=0.45]{CL_approved_pct_repayment_density.pdf}
+\subsection{Credit Line}
 \includegraphics[scale=0.45]{CL_approved_repayment_density.pdf}
-
-
 \includegraphics[scale=0.45]{CL_requested_repayment_density.pdf}
+
+\centerline{\includegraphics[scale=0.45]{CL_approved_pct_repayment_density.pdf}
+}
 
 \newpage
 
-\subsection*{Income}
+\subsection{Income}
 
 \includegraphics[scale=0.45]{monthly_income_loan_repayment_density.pdf}
 \includegraphics[scale=0.45]{salary_frequency_repayment_density.pdf}
 
 \newpage
-\section*{Rent}
+\subsection{Rent}
 
 \includegraphics[scale=0.45]{monthly_rent_loan_repayment_density.pdf}
 \includegraphics[scale=0.45]{residence_duration_repayment_density.pdf}
 
 \newpage
-\section*{Credit Scores}
+\subsection*{Credit Scores}
 \includegraphics[scale=0.45]{fico_repayment_density.pdf}
 \includegraphics[scale=0.45]{serasa_repayment_density.pdf} \\
 \includegraphics[scale=0.45]{tu_repayment_density.pdf}
 \includegraphics[scale=0.45]{unit4_repayment_density.pdf}
 
+\newpage
+
 \begin{center}
-\includegraphics[scale=0.75]{lexisnexis_repayment_density.pdf}
+\includegraphics[scale=0.85]{lexisnexis_repayment_density.pdf}
 \end{center}
 
-
-\section*{The bad guys}
-
+\begin{center}
+Note: $ \rho( \text{Unit 4 Score, Lexis Nexis Score}) = .8947$
+\end{center}
 
 \newpage
 
-\section*{Methodology}
+
+
+\newpage
+\section{Principal Component Analysis (P.C.A.)}
+
+\subsection{Loadings}
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrrrrrrrr}
+  \hline
+ & Comp.1 & Comp.2 & Comp.3 & Comp.4 & Comp.5 & Comp.6 & Comp.7 & Comp.8 & Comp.9 & Comp.10 & Comp.11 & Comp.12 & Comp.13 & Comp.14 \\ 
+  \hline
+Credit\_Line\_requested & 0.06 & -0.45 & -0.04 & 0.57 & -0.00 & 0.01 & -0.00 & 0.01 & 0.02 & -0.01 & -0.02 & 0.00 & -0.00 & 0.68 \\ 
+  Credit\_Line\_approved & 0.18 & -0.27 & -0.04 & 0.41 & 0.47 & 0.05 & 0.41 & -0.18 & 0.04 & -0.07 & -0.03 & -0.00 & 0.01 & -0.54 \\ 
+  monthly\_income\_amount & 0.19 & -0.48 & -0.14 & -0.38 & -0.04 & -0.03 & -0.01 & -0.16 & -0.04 & 0.03 & 0.72 & -0.11 & 0.03 & -0.00 \\ 
+  raw\_serasa\_score & 0.01 & -0.01 & -0.13 & -0.01 & 0.64 & -0.09 & -0.74 & -0.01 & -0.13 & 0.03 & -0.02 & -0.01 & -0.01 & -0.00 \\ 
+  raw\_unit4\_score & 0.46 & 0.16 & -0.18 & 0.07 & -0.11 & 0.01 & -0.02 & 0.06 & -0.31 & -0.19 & 0.11 & 0.75 & -0.05 & -0.00 \\ 
+  raw\_lexisnexis\_score & 0.42 & 0.20 & -0.22 & 0.11 & -0.15 & 0.05 & -0.03 & -0.00 & -0.43 & -0.33 & -0.07 & -0.63 & -0.01 & 0.00 \\ 
+  raw\_TU\_score & 0.41 & 0.16 & -0.10 & 0.05 & -0.06 & -0.03 & -0.19 & -0.05 & 0.83 & -0.24 & 0.04 & -0.05 & -0.01 & 0.00 \\ 
+  raw\_FICO\_money\_score & 0.46 & 0.09 & -0.01 & 0.04 & -0.06 & 0.00 & -0.01 & -0.05 & -0.00 & 0.87 & -0.11 & -0.08 & 0.08 & -0.00 \\ 
+  Credit\_Line\_approved\_pct & 0.12 & 0.32 & 0.01 & -0.35 & 0.52 & 0.03 & 0.45 & -0.21 & 0.01 & -0.05 & -0.00 & -0.01 & -0.01 & 0.49 \\ 
+  applicant\_age & 0.22 & -0.07 & 0.65 & -0.03 & 0.02 & 0.04 & -0.08 & -0.02 & -0.06 & -0.04 & 0.02 & -0.04 & -0.71 & -0.01 \\ 
+  Gender\_facebook\_female & -0.04 & 0.01 & -0.05 & -0.02 & 0.03 & 0.99 & -0.10 & 0.04 & 0.04 & 0.03 & 0.05 & 0.02 & 0.00 & 0.00 \\ 
+  age2 & 0.21 & -0.05 & 0.65 & -0.03 & 0.02 & 0.04 & -0.10 & -0.03 & -0.07 & -0.16 & -0.00 & 0.01 & 0.69 & 0.01 \\ 
+  income2 & 0.13 & -0.46 & -0.14 & -0.40 & -0.12 & 0.04 & -0.06 & -0.36 & -0.01 & -0.11 & -0.65 & 0.09 & -0.02 & 0.00 \\ 
+  rent2 & 0.19 & -0.25 & -0.04 & -0.24 & 0.17 & -0.02 & 0.15 & 0.87 & 0.06 & -0.02 & -0.15 & -0.04 & 0.01 & -0.00 \\ 
+   \hline
+   Cumulative Prop. of Var. & 0.259 & 0.415 & 0.550 & 0.669 & 0.751 & 0.823 & 0.886 & 0.939 & 0.9652 & 0.984 & 0.992 & 0.998 & 0.999 & 1.00 \\
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Screeplot}
+\centerline{\includegraphics[scale=0.45]{screeplot.pdf}}
+
+\newpage
+\section{Logistic Regression}
+
+\section{Other Models}
+\newpage
+\subsection{Support Vector Machine (SVM)}
+
+\subsection{Linear Discriminant Analysis (LDA)}
 
 \begin{center}
 
 \end{center}
 
-\section*{Questions}
+\newpage
+\section{Comments and Concerns}
 
+\newpage
+\section{Questions?}
 
+Thank you.
 
 
 \end{document}

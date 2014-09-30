@@ -1,10 +1,32 @@
+library(psych)
+library(xtable)
 
 setwd('~/ML/NuBank')
 data <- read.csv('data.csv')
 
+## Data Pre-Processing
+data$Facebook.profile.duration <- factor(data$Facebook.profile.duration)
+data$residence_duration <- factor(data$residence_duration)
+data$bank_account_duration <- factor(data$bank_account_duration, c('6 months or less', '7-12 months', '1-2 years', '3+ years'))
+data$salary_frequency <- factor(data$salary_frequency, c('Weekly', 'Bi-weekly', 'Monthly', 'Semi-monthly'))
+data$home_phone_type <- factor(data$home_phone_type)
+data$other_phone_type <- factor(data$other_phone_type)
+data$Gender_facebook <- factor(data$Gender_facebook)
+data$Title <- factor(data$Title)
+data$residence_rent_or_own <- factor(data$residence_rent_or_own)
+data$residence_duration <- factor(data$residence_duration, c('6 months or less', '7-12 months', '1-2 years', '3+ years'))
+data$Gender_facebook_female <- ifelse(data$Gender_facebook=='female', 1, 0)
+data$Credit_Line_approved_pct <- as.numeric(as.character(data$Credit_Line_approved_pct))
+data$applicant_age <- as.numeric(as.character(data$applicant_age))
 
-X_num <- data[, c(4, 19:24, 40, 42, 43)]
-names(X_num) <- names(data)[c(4, 19:24, 40, 42, 43)]
+
+data$age2 <- data$applicant_age^2
+data$income2 <- data$monthly_income_amount^2
+data$rent2 <- data$monthly_rent_amount^2
+
+
+X_num <- data[, c(4, 10, 19:24, 40, 42:46)]
+names(X_num) <- names(data)[c(4, 10, 19:24, 40, 42:46)]
 X_cat <- data[, c(8, 13:18, 26)]
 names(X_cat) <- names(data)[c(8, 13:18, 26)]
 
@@ -21,6 +43,41 @@ PC <- princomp(X_num_whitened)
 PC$loadings
 plot(PC)
 screeplot(PC, type='lines')
+vars <- apply(PC$x, 2, var)
+
+
+ggscreeplot <- function(pcobj, type = c('pev', 'cev')) 
+{
+  type <- match.arg(type)
+  d <- pcobj$sdev^2
+  yvar <- switch(type, 
+                 pev = d / sum(d), 
+                 cev = cumsum(d) / sum(d))
+  
+  yvar.lab <- switch(type,
+                     pev = 'proportion of explained variance',
+                     cev = 'cumulative proportion of explained variance')
+  
+  df <- data.frame(PC = 1:length(d), yvar = yvar)
+  
+  ggplot(data = df, aes(x = PC, y = yvar)) + 
+    xlab('principal component number') + ylab(yvar.lab) +
+    geom_point() + geom_path()
+}
+
+setwd('~/ML/NuBank/Plots')
+
+ggscreeplot(PC) +
+  ggtitle('Screeplot of Principal Components')
+
+ggsave(file='screeplot.pdf', width=297, height=210, units="mm")
+
+
+
+dat1  <-  data.frame(dat1$scores) 
+dat1$items  <-  rownames(data1) 
+ggplot(dat1, aes(Comp.1, Comp.2, colour = items)) + geom_point() + 
+  theme(legend.position="none") 
 
 pc <- prcomp(X_num_whitened)
 summary(pc)

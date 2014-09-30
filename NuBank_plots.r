@@ -27,7 +27,35 @@ data$applicant_age <- as.numeric(as.character(data$applicant_age))
 ## EXPLORATORY DATA ANALYSIS @ Individual Variable Level
 
 # Overlayed Histograms in ggplot2
+setwd('~/ML/NuBank/Plots')
 
+# AGE
+ggplot(data, aes(x=applicant_age, fill=factor(y))) + geom_density(alpha=0.5) +
+  ggtitle('Density Plot of Loan Repayment Status vs. Applicant Age') +
+  xlab('Applicant Age (years)') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
+
+ggsave(file='applicant_age_repayment_density.pdf', width=297, height=210, units="mm")
+
+ggplot(data, aes(x=age2, fill=factor(y))) + geom_density(alpha=0.5) +
+  ggtitle('Density Plot of Loan Repayment Status vs. Applicant Age Squared') +
+  xlab('Applicant Age Squared (years)') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
+
+ggsave(file='applicant_age2_repayment_density.pdf', width=297, height=210, units="mm")
+
+
+# GENDER
+ggplot(data, aes(x=Gender_facebook, fill=factor(y))) + geom_bar(position="fill") +   
+  ggtitle('Proportion Plot of Loan Repayment Status vs. Gender on Facebook') +
+  xlab('Gender') +
+  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
+
+ggsave(file='gender_repayment_density.pdf', width=297, height=210, units="mm")
+
+
+
+# Monthly Income vs. Salary Frequency
 ggplot(data, aes(x=monthly_income_amount, fill=salary_frequency)) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Monthly Income by Salary Frequency')
   xlab('Monthly Income')
@@ -36,7 +64,7 @@ ggplot(data, aes(x=monthly_income_amount, fill=salary_frequency)) + geom_density
 ggsave(file='monthly_income_salary_frequency_density.pdf', width=297, height=210, units="mm")
 
 
-
+# Monthly Income
 ggplot(data, aes(x=monthly_income_amount, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Reported Monthly Income') +
   xlab('Reported Monthly Income') +
@@ -44,6 +72,7 @@ ggplot(data, aes(x=monthly_income_amount, fill=factor(y))) + geom_density(alpha=
 
 ggsave(file='monthly_income_repayment_density.pdf', width=297, height=210, units="mm")
 
+# Monthly Rent
 ggplot(data, aes(x=monthly_rent_amount, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Reported Monthly Rent') +
   xlab('Reported Monthly Rent') +
@@ -51,7 +80,8 @@ ggplot(data, aes(x=monthly_rent_amount, fill=factor(y))) + geom_density(alpha=0.
         
 ggsave(file='monthly_rent_repayment_density.pdf', width=297, height=210, units="mm")
                       
-
+## CREDIT SCORES
+# Unit 4 score
 ggplot(data, aes(x=raw_unit4_score, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
   xlab('Unit 4 Score') +
@@ -59,14 +89,15 @@ ggplot(data, aes(x=raw_unit4_score, fill=factor(y))) + geom_density(alpha=0.5) +
 
 ggsave(file='unit4_repayment_density.pdf', width=297, height=210, units="mm")
 
+# Serasa score
 ggplot(data, aes(x=raw_serasa_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Serasa Score') +
-  xlab('Serasa Score') +
+  ggtitle('Density Plot of Loan Repayment Status vs. Serasa Experian Score') +
+  xlab('Serasa Experian Score') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
                       
 ggsave(file='serasa_repayment_density.pdf', width=297, height=210, units="mm")
 
-  
+#LexisNexis score
 ggplot(data, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Lexis Nexis Score') +
   xlab('Lexis Nexis Score') +
@@ -74,17 +105,15 @@ ggplot(data, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0
 
 ggsave(file='lexisnexis_repayment_density.pdf', width=297, height=210, units="mm")
                         
-                        
-
-                      
+# TransUnion score                                             
 ggplot(data, aes(x=raw_TU_score, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. TU Score') +
-  xlab('TU Score') +
+  ggtitle('Density Plot of Loan Repayment Status vs. TransUnion Score') +
+  xlab('TransUnion Score') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
 ggsave(file='tu_repayment_density.pdf', width=297, height=210, units="mm")
 
-                      
+# FICO score                      
 ggplot(data, aes(x=raw_FICO_money_score, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. FICO Score') +
   xlab('FICO Score') +
@@ -93,7 +122,7 @@ ggplot(data, aes(x=raw_FICO_money_score, fill=factor(y))) + geom_density(alpha=0
 ggsave(file='fico_repayment_density.pdf', width=297, height=210, units="mm")
                       
                       
-                      
+## CREDIT LINE APPLICATION                      
 ggplot(data, aes(x=Credit_Line_approved_pct, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Credit Line Approved Percent (%)') +
   xlab('Credit Line Approved / Credit Line Requested (%)') +
@@ -103,15 +132,15 @@ ggsave(file='CL_approved_pct_repayment_density.pdf', width=297, height=210, unit
 
 
 ggplot(data, aes(x=Credit_Line_requested, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Credit Line Requested ') +
-  xlab('Credit Line Requested') +
+  ggtitle('Density Plot of Loan Repayment Status vs. Requested Credit Line ') +
+  xlab('Requested Credit Line Amount') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
 
 ggsave(file='CL_requested_repayment_density.pdf', width=297, height=210, units="mm")
 
                       
 ggplot(data, aes(x=Credit_Line_approved, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
+  ggtitle('Density Plot of Loan Repayment Status vs. Approved Credit Line') +
   xlab('Approved Credit Line Amount') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
                    
@@ -119,14 +148,7 @@ ggsave(file='CL_approved_repayment_density.pdf', width=297, height=210, units="m
 
 
 
-ggplot(data, aes(x=applicant_age, fill=factor(y))) + geom_density(alpha=0.5) +
-  ggtitle('Density Plot of Loan Repayment Status vs. Applicant Age') +
-  xlab('Applicant Age (years)') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
-                      
-ggsave(file='applicant_age_repayment_density.pdf', width=297, height=210, units="mm")
-                      
-
+# Salary Frequency
 ggplot(data, aes(x=salary_frequency, fill=factor(y))) + geom_bar(position="fill") + 
   ggtitle('Proportion Plot of Loan Repayment Status vs. Salary Frequency of Applicant') +
   xlab('Salary Frequency') +
@@ -134,6 +156,7 @@ ggplot(data, aes(x=salary_frequency, fill=factor(y))) + geom_bar(position="fill"
 
 ggsave(file='salary_frequency_repayment_density.pdf', width=297, height=210, units="mm")
 
+# Bank Account Duration
 ggplot(data, aes(x=bank_account_duration, fill=factor(y))) + geom_bar(position="fill") + 
   ggtitle('Proportion Plot of Loan Repayment Status vs. Duration of Bank Account') +
   xlab('Bank Account Duration') +
@@ -141,13 +164,6 @@ ggplot(data, aes(x=bank_account_duration, fill=factor(y))) + geom_bar(position="
 
 ggsave(file='bank_account_duration_repayment_density.pdf', width=297, height=210, units="mm")
 
-
-ggplot(data, aes(x=Gender_facebook, fill=factor(y))) + geom_bar(position="fill") +   
-  ggtitle('Proportion Plot of Loan Repayment Status vs. Gender on Facebook') +
-  xlab('Gender') +
-  scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
-
-ggsave(file='gender_repayment_density.pdf', width=297, height=210, units="mm")
 
 ggplot(data, aes(x=home_phone_type, fill=factor(y))) + geom_bar(position="fill") + 
   ggtitle('Proportion Plot of Loan Repayment Status vs. Salary Frequency of Applicant') +
@@ -173,49 +189,7 @@ ggsave(file='salary_frequency_repayment_density.pdf', width=297, height=210, uni
 
 ggplot(data, aes(x=residence_duration, fill=factor(y))) + geom_bar(position="fill") + 
   ggtitle('Proportion Plot of Loan Repayment Status vs. Residence Duration of Applicant') +
-  xlab('Salary Frequency') +
+  xlab('Residence Duration') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months'))
 
 ggsave(file='residence_duration_repayment_density.pdf', width=297, height=210, units="mm")
-
-
-plot(factor(data$residence_duration), factor(data$y))
-table(data$residence_duration, data$y)
-
-plot(factor(data$Title), factor(data$y))
-sort(table(data$City), decreasing=TRUE)
-RJ <- subset(data, City=='Rio de Janeiro')
-ggplot(RJ, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0.5)
-table(RJ$y)
-
-cities <- levels(data$City)
-
-
-SP <- subset(data, City==cities[183])
-ggplot(SP, aes(x=raw_lexisnexis_score, fill=factor(y))) + geom_density(alpha=0.5)
-table(SP$y)
-
-Sal <- subset(data, City=='Salvador')
-RJSPSL <- rbind(RJ, SP, Sal)
-
-RJSP <- rbind(RJ, SP)
-RJSP_good <- subset(RJSP, y==1)
-RJSP_bad <- subset(RJSP, y==-1)
-
-ggplot(RJSP, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-ggplot(RJSP_good, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-ggplot(RJSP_bad, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-
-RJSPSL_good <- subset(RJSPSL, y==1)
-RJSPSL_bad <- subset(RJSPSL, y==-1)
-
-ggplot(RJSPSL, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-ggplot(RJSPSL_good, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-ggplot(RJSPSL_bad, aes(x=raw_lexisnexis_score, fill=factor(City))) + geom_density(alpha=0.5)
-
-plot(bra0)
-points(x=RJSPSL_good$Longitude, y=RJSPSL_good$Latitude, col='green', cex=0.25)
-points(x=RJSPSL_bad$Longitude, y=RJSPSL_bad$Latitude, col='red', cex=0.25)
-
-dim(RJSPSL_good)
-dim(RJSPSL_bad)
