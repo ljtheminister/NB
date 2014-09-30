@@ -1,11 +1,13 @@
 \documentclass[a4paper, landscape]{article}
 
+%\documentclass[a4paper]{article}
 
 \usepackage{rotating}
-\usepackage[margin=0.5in]{geometry}
-
+\usepackage[margin=0.25in]{geometry}
 \usepackage{graphicx}
 \usepackage{pdfpages}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
 
 
@@ -15,15 +17,73 @@
 \author{John Min}
 \maketitle
 
+\tableofcontents
+
 \newpage
 
 \section*{Who are the applicants?}
 
 
 
+
+\section*{The good guys}
+\graphicspath{ {/home/lj/ML/NuBank/Plots/} }
+
+\newpage
+
+\subsection*{Age, Gender}
+
+
+\begin{center}
+\includegraphics[scale=0.45]{applicant_age_repayment_density.pdf}
+\includegraphics[scale=0.45]{gender_repayment_density.pdf}
+\end{center}
+
+\section*{Credit Line}
+\includegraphics[scale=0.45]{CL_approved_pct_repayment_density.pdf}
+\includegraphics[scale=0.45]{CL_approved_repayment_density.pdf}
+
+
+\includegraphics[scale=0.45]{CL_requested_repayment_density.pdf}
+
+\newpage
+
+\subsection*{Income}
+
+\includegraphics[scale=0.45]{monthly_income_loan_repayment_density.pdf}
+\includegraphics[scale=0.45]{salary_frequency_repayment_density.pdf}
+
+\newpage
+\section*{Rent}
+
+\includegraphics[scale=0.45]{monthly_rent_loan_repayment_density.pdf}
+\includegraphics[scale=0.45]{residence_duration_repayment_density.pdf}
+
+\newpage
+\section*{Credit Scores}
+\includegraphics[scale=0.45]{fico_repayment_density.pdf}
+\includegraphics[scale=0.45]{serasa_repayment_density.pdf} \\
+\includegraphics[scale=0.45]{tu_repayment_density.pdf}
+\includegraphics[scale=0.45]{unit4_repayment_density.pdf}
+
+\begin{center}
+\includegraphics[scale=0.75]{lexisnexis_repayment_density.pdf}
+\end{center}
+
+
+\section*{The bad guys}
+
+
+\newpage
+
+\section*{Methodology}
+
 \begin{center}
 
 \end{center}
+
+\section*{Questions}
+
 
 
 
