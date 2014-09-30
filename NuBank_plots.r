@@ -7,45 +7,6 @@ library(e1071)
 setwd('~/ML/NuBank')
 data <- read.csv('data.csv')
 
-plot(data[data$y==1, 'Facebook.profile.duration'])
-plot(data[data$y==-1, 'Facebook.profile.duration'])
-
-
-hist(data[data$y==1, 'monthly_income_amount'])
-hist(data[data$y==-1, 'monthly_income_amount'])
-
-hist(data[data$y==1, 'Credit_Line_approved'])
-hist(data[data$y==-1, 'Credit_Line_approved'])
-
-#data$Credit_Line_approved_pct <- data$Credit_Line_approved_pct
-hist(data[data$y==1, 'Credit_Line_approved_pct'])
-plot(data[data$y==-1, 'Credit_Line_approved_pct'])
-plot(data[data$y==1, 'Credit_Line_approved_pct'])
-
-
-hist(data[data$y==1, 'raw_unit4_score'])
-hist(data[data$y==-1, 'raw_unit4_score'])
-
-hist(data[data$y==1, 'raw_serasa_score'])
-hist(data[data$y==-1, 'raw_serasa_score'])
-
-hist(data[data$y==1, 'raw_TU_score'])
-hist(data[data$y==-1, 'raw_TU_score'])
-
-hist(data[data$y==1, 'raw_lexisnexis_score'])
-hist(data[data$y==-1, 'raw_lexisnexis_score'])
-
-plot(data[data$y==1, 'bank_account_duration'])
-plot(data[data$y==-1, 'bank_account_duration'])
-
-plot(data[data$y==1, 'residence_duration'])
-plot(data[data$y==-1, 'residence_duration'])
-
-plot(data[data$y==1, 'salary_frequency'])
-plot(data[data$y==-1, 'salary_frequency'])
-
-# histogram of income vs. salary frequency
-
 ## Data Pre-Processing
 data$Facebook.profile.duration <- factor(data$Facebook.profile.duration)
 data$residence_duration <- factor(data$residence_duration)
@@ -57,21 +18,9 @@ data$Gender_facebook <- factor(data$Gender_facebook)
 data$Title <- factor(data$Title)
 data$residence_rent_or_own <- factor(data$residence_rent_or_own)
 data$residence_duration <- factor(data$residence_duration, c('6 months or less', '7-12 months', '1-2 years', '3+ years'))
-
 data$Gender_facebook_female <- ifelse(data$Gender_facebook=='female', 1, 0)
 data$Credit_Line_approved_pct <- as.numeric(as.character(data$Credit_Line_approved_pct))
 data$applicant_age <- as.numeric(as.character(data$applicant_age))
-
-
-
-cor(data$raw_unit4_score, data$raw_lexisnexis_score)
-cor(data$raw_unit4_score, data$raw_TU_score)
-cor(data$raw_unit4_score, data$raw_FICO_money_score)
-
-cor(data$raw_lexisnexis_score, data$raw_TU_score)
-cor(data$raw_lexisnexis_score, data$raw_FICO_money_score)
-
-cor(data$raw_TU_score, data$raw_FICO_money_score)
 
 
 # Spatial Regression
