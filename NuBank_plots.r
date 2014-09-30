@@ -200,7 +200,7 @@ ggsave(file='CL_requested_repayment_density.pdf', width=297, height=210, units="
                       
 ggplot(data, aes(x=Credit_Line_approved, fill=factor(y))) + geom_density(alpha=0.5) +
   ggtitle('Density Plot of Loan Repayment Status vs. Unit 4 Score') +
-  xlab('Unit 4 Score') +
+  xlab('Approved Credit Line Amount') +
   scale_fill_discrete('Loan Repayment Status', labels=c('Outstanding', 'Paid back in 12 months')) 
                    
 ggsave(file='CL_approved_repayment_density.pdf', width=297, height=210, units="mm")
